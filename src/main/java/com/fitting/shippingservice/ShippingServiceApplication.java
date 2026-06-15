@@ -1,13 +1,11 @@
-package com.fitting.shipping;
+package com.fitting.shippingservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShippingApplication {
-
+public class ShippingServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ShippingApplication.class, args);
+        SpringApplication.run(ShippingServiceApplication.class, args);
     }
-
 }

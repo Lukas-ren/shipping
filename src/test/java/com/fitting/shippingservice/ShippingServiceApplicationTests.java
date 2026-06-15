@@ -1,10 +1,10 @@
-package com.fitting.shipping;
+package com.fitting.shippingservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShippingApplicationTests {
+class ShippingServiceApplicationTests {
 
     @Test
     void contextLoads() {
