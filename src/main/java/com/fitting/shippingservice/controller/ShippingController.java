@@ -5,6 +5,9 @@ import com.fitting.shippingservice.dto.ShippingResponse;
 import com.fitting.shippingservice.entity.ShippingStatus;
 import com.fitting.shippingservice.service.ShippingService;
 import com.fitting.shippingservice.util.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "Envíos", description = "Gestión y seguimiento de envíos")
 @RestController
 @RequestMapping("/api/v1/shippings")
 @RequiredArgsConstructor
@@ -21,6 +25,11 @@ public class ShippingController {
 
     private final ShippingService shippingService;
 
+    @Operation(summary = "Crear envío")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Envío creado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Ya existe un envío para esa orden")
+    })
     @PostMapping
     public ResponseEntity<ApiResponse<ShippingResponse>> create(
             @Valid @RequestBody ShippingRequest request) {
@@ -30,6 +39,8 @@ public class ShippingController {
                         shippingService.create(request)));
     }
 
+    @Operation(summary = "Listar envíos")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Lista obtenida")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ShippingResponse>>> findAll() {
         log.info("GET /api/v1/shippings");
@@ -37,6 +48,7 @@ public class ShippingController {
                 shippingService.findAll()));
     }
 
+    @Operation(summary = "Buscar envío por ID")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ShippingResponse>> findById(@PathVariable Long id) {
         log.info("GET /api/v1/shippings/{}", id);
@@ -44,6 +56,7 @@ public class ShippingController {
                 shippingService.findById(id)));
     }
 
+    @Operation(summary = "Buscar envío por orden")
     @GetMapping("/order/{orderId}")
     public ResponseEntity<ApiResponse<ShippingResponse>> findByOrderId(
             @PathVariable Long orderId) {
@@ -52,6 +65,7 @@ public class ShippingController {
                 shippingService.findByOrderId(orderId)));
     }
 
+    @Operation(summary = "Filtrar envíos por estado")
     @GetMapping("/status/{status}")
     public ResponseEntity<ApiResponse<List<ShippingResponse>>> findByStatus(
             @PathVariable ShippingStatus status) {
@@ -60,6 +74,7 @@ public class ShippingController {
                 shippingService.findByStatus(status)));
     }
 
+    @Operation(summary = "Actualizar datos del envío")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ShippingResponse>> update(
             @PathVariable Long id,
@@ -69,6 +84,11 @@ public class ShippingController {
                 shippingService.update(id, request)));
     }
 
+    @Operation(summary = "Actualizar estado del envío", description = "Ciclo: PREPARING → DISPATCHED → IN_TRANSIT → DELIVERED")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Estado actualizado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Transición de estado inválida")
+    })
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<ShippingResponse>> updateStatus(
             @PathVariable Long id,
@@ -78,6 +98,7 @@ public class ShippingController {
                 shippingService.updateStatus(id, status)));
     }
 
+    @Operation(summary = "Eliminar envío")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         log.info("DELETE /api/v1/shippings/{}", id);
